@@ -1,14 +1,14 @@
-// src/main.js - CÓDIGO COMPLETO ATUALIZADO
+﻿// src/main.js - CÃ“DIGO COMPLETO ATUALIZADO
 import './style.css';
 import { initModals, openModalContaReceber, openModalContaPagar } from './components/Modal.js';
 import { Header } from './components/Header.js';
 import { Sidebar } from './components/Sidebar.js';
 import { Dashboard } from './components/Dashboard.js';
 
-// Estado da aplicação
+// Estado da aplicaÃ§Ã£o
 let currentPage = 'dashboard';
 
-// Renderizar aplicação
+// Renderizar aplicaÃ§Ã£o
 function renderApp() {
   return `
     <div class="app-container">
@@ -17,12 +17,12 @@ function renderApp() {
         ${Sidebar()}
       </div>
       
-      <!-- Conteúdo principal -->
+      <!-- ConteÃºdo principal -->
       <div class="flex-1 flex flex-col min-h-screen">
         <!-- Header -->
         ${Header()}
         
-        <!-- Conteúdo dinâmico -->
+        <!-- ConteÃºdo dinÃ¢mico -->
         <main class="flex-1 p-4 md:p-6 overflow-auto">
           <div id="page-content">
             ${Dashboard()}
@@ -39,7 +39,7 @@ function renderApp() {
   `;
 }
 
-// Carregar página dinamicamente
+// Carregar pÃ¡gina dinamicamente
 async function loadPage(page) {
   const content = document.getElementById('page-content');
   currentPage = page;
@@ -68,28 +68,47 @@ async function loadPage(page) {
         break;
         
       case 'financeiro':
-        content.innerHTML = `
-          <div class="card p-6">
-            <h2 class="text-xl font-bold mb-4">Financeiro</h2>
-            <p class="text-gray-600">Módulo em desenvolvimento...</p>
-          </div>
-        `;
-        break;
+  const { Financeiro } = await import('./components/Financeiro.js');
+  content.innerHTML = Financeiro();
+  
+  // Inicializar eventos do financeiro
+  setTimeout(() => {
+    const script = document.createElement('script');
+    script.textContent = \
+      document.getElementById('btn-nova-conta-receber')?.addEventListener('click', function() {
+        if (window.openModalContaReceber) {
+          window.openModalContaReceber();
+        } else {
+          alert('Nova receita - Funcionalidade completa em desenvolvimento');
+        }
+      });
+      
+      document.getElementById('btn-nova-conta-pagar')?.addEventListener('click', function() {
+        if (window.openModalContaPagar) {
+          window.openModalContaPagar();
+        } else {
+          alert('Nova despesa - Funcionalidade completa em desenvolvimento');
+        }
+      });
+    \;
+    document.head.appendChild(script);
+  }, 100);
+  break;
         
       case 'agenda':
         const { Calendario } = await import('./components/Calendario.js');
         content.innerHTML = Calendario();
         
-        // Inicializar eventos do calendário
+        // Inicializar eventos do calendÃ¡rio
         setTimeout(() => {
           const script = document.createElement('script');
           script.textContent = `
             document.getElementById('prev-month')?.addEventListener('click', function() {
-              alert('Mês anterior - em desenvolvimento');
+              alert('MÃªs anterior - em desenvolvimento');
             });
             
             document.getElementById('next-month')?.addEventListener('click', function() {
-              alert('Próximo mês - em desenvolvimento');
+              alert('PrÃ³ximo mÃªs - em desenvolvimento');
             });
             
             document.querySelectorAll('[data-dia]').forEach(celula => {
@@ -109,8 +128,8 @@ async function loadPage(page) {
       case 'relatorios':
         content.innerHTML = `
           <div class="card p-6">
-            <h2 class="text-xl font-bold mb-4">Relatórios</h2>
-            <p class="text-gray-600">Módulo em desenvolvimento...</p>
+            <h2 class="text-xl font-bold mb-4">RelatÃ³rios</h2>
+            <p class="text-gray-600">MÃ³dulo em desenvolvimento...</p>
           </div>
         `;
         break;
@@ -118,20 +137,20 @@ async function loadPage(page) {
       default:
         content.innerHTML = `
           <div class="card p-6">
-            <h2 class="text-xl font-bold text-red-600">Página não encontrada</h2>
-            <p class="text-gray-600">A página solicitada não existe.</p>
+            <h2 class="text-xl font-bold text-red-600">PÃ¡gina nÃ£o encontrada</h2>
+            <p class="text-gray-600">A pÃ¡gina solicitada nÃ£o existe.</p>
           </div>
         `;
     }
     
-    // Inicializar eventos da página carregada
+    // Inicializar eventos da pÃ¡gina carregada
     initializePageEvents();
     
   } catch (error) {
-    console.error('Erro ao carregar página:', error);
+    console.error('Erro ao carregar pÃ¡gina:', error);
     content.innerHTML = `
       <div class="card p-6">
-        <h2 class="text-xl font-bold text-red-600">Erro ao carregar página</h2>
+        <h2 class="text-xl font-bold text-red-600">Erro ao carregar pÃ¡gina</h2>
         <p class="text-gray-600">${error.message}</p>
         <button onclick="loadPage('dashboard')" class="mt-4 btn btn-primary">
           Voltar para Dashboard
@@ -141,19 +160,19 @@ async function loadPage(page) {
   }
 }
 
-// Inicializar eventos da página
+// Inicializar eventos da pÃ¡gina
 function initializePageEvents() {
-  // Eventos específicos por página
+  // Eventos especÃ­ficos por pÃ¡gina
   if (currentPage === 'dashboard') {
     // Eventos do dashboard
     console.log('Eventos do dashboard inicializados');
   } else if (currentPage === 'agenda') {
-    // Eventos específicos da agenda podem ser adicionados aqui
+    // Eventos especÃ­ficos da agenda podem ser adicionados aqui
     console.log('Eventos da agenda inicializados');
   }
 }
 
-// Inicializar aplicação
+// Inicializar aplicaÃ§Ã£o
 function initApp() {
   // Renderizar estrutura principal
   document.getElementById('app').innerHTML = renderApp();
@@ -161,7 +180,7 @@ function initApp() {
   // Inicializar modais
   initModals();
   
-  // Eventos de navegação
+  // Eventos de navegaÃ§Ã£o
   document.querySelectorAll('[data-page]').forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
@@ -183,7 +202,7 @@ function initApp() {
     });
   });
   
-  // Botões de ação rápida
+  // BotÃµes de aÃ§Ã£o rÃ¡pida
   document.getElementById('btn-nova-conta-receber')?.addEventListener('click', openModalContaReceber);
   document.getElementById('btn-nova-conta-pagar')?.addEventListener('click', openModalContaPagar);
   
@@ -215,7 +234,7 @@ function initApp() {
         <div class="modal-content w-full max-w-2xl">
           <div class="modal-header">
             <div class="modal-title flex items-center gap-2">
-              <span>📥</span>
+              <span>ðŸ“¥</span>
               <span>Nova Conta a Receber</span>
             </div>
             <span class="close-modal cursor-pointer text-2xl hover:text-gray-700">&times;</span>
@@ -235,7 +254,7 @@ function initApp() {
         <div class="modal-content w-full max-w-2xl">
           <div class="modal-header">
             <div class="modal-title flex items-center gap-2">
-              <span>📤</span>
+              <span>ðŸ“¤</span>
               <span>Nova Conta a Pagar</span>
             </div>
             <span class="close-modal cursor-pointer text-2xl hover:text-gray-700">&times;</span>
@@ -255,7 +274,7 @@ function initApp() {
         <div class="modal-content w-full max-w-2xl">
           <div class="modal-header">
             <div class="modal-title flex items-center gap-2">
-              <span>👥</span>
+              <span>ðŸ‘¥</span>
               <span>Detalhes do Cliente</span>
             </div>
             <span class="close-modal cursor-pointer text-2xl hover:text-gray-700">&times;</span>
@@ -272,7 +291,7 @@ function initApp() {
     `;
   }
   
-  console.log('🚀 CRM Home Care inicializado com sucesso!');
+  console.log('ðŸš€ CRM Home Care inicializado com sucesso!');
 }
 
 // Iniciar quando DOM estiver pronto
@@ -287,6 +306,6 @@ if (import.meta.hot) {
   import.meta.hot.accept();
 }
 
-// Exportar funções para uso global
+// Exportar funÃ§Ãµes para uso global
 window.loadPage = loadPage;
 window.currentPage = currentPage;
