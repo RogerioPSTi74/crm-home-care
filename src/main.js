@@ -54,10 +54,63 @@ async function loadPage(page) {
         content.innerHTML = Dashboard();
         break;
         
-      case 'clientes':
-        const { Clientes } = await import('./components/Clientes.js');
-        content.innerHTML = Clientes();
-        break;
+      // Em src/main.js, dentro do switch case 'clientes':
+case 'clientes':
+  const { Clientes } = await import('./components/Clientes.js');
+  content.innerHTML = Clientes();
+  
+  // Inicializar eventos do modal de clientes
+  setTimeout(() => {
+    const btnNovoCliente = document.getElementById('btn-novo-cliente');
+    const modalCliente = document.getElementById('modal-novo-cliente');
+    const formCliente = document.getElementById('form-novo-cliente');
+    
+    if (btnNovoCliente && modalCliente) {
+      btnNovoCliente.addEventListener('click', () => {
+        modalCliente.classList.remove('hidden');
+        modalCliente.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+      });
+    }
+    
+    // Fechar modal quando clicar no X ou fora
+    document.querySelectorAll('[data-modal="novo-cliente"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (modalCliente) {
+          modalCliente.classList.remove('flex');
+          modalCliente.classList.add('hidden');
+          document.body.style.overflow = '';
+        }
+      });
+    });
+    
+    // Fechar modal ao clicar fora do conteúdo
+    if (modalCliente) {
+      modalCliente.addEventListener('click', (e) => {
+        if (e.target === modalCliente) {
+          modalCliente.classList.remove('flex');
+          modalCliente.classList.add('hidden');
+          document.body.style.overflow = '';
+        }
+      });
+    }
+    
+    // Enviar formulário
+    if (formCliente) {
+      formCliente.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const nome = document.getElementById('cliente-nome').value;
+        alert('Cliente "' + nome + '" cadastrado com sucesso! (Funcionalidade em desenvolvimento)');
+        
+        // Fechar modal e limpar formulário
+        modalCliente.classList.remove('flex');
+        modalCliente.classList.add('hidden');
+        document.body.style.overflow = '';
+        formCliente.reset();
+      });
+    }
+  }, 100);
+  break;
         
       case 'profissionais':
         const { Profissionais } = await import('./components/Profissionais.js');
@@ -189,3 +242,5 @@ if (document.readyState === 'loading') {
 } else {
   initApp();
 }
+
+
