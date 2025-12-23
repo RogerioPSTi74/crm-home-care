@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <!-- meta viewport ESSENCIAL para responsividade -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>CRM Home Care</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/vite.svg">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/src/style.css">
+    
+    <!-- Importar fontes se necessário -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+    <!-- Container principal -->
+    <div id="app"></div>
+    
+    <!-- Script Vite - type="module" é ESSENCIAL -->
+    <script type="module" src="/src/main.js"></script>
+    <!-- Modais -->
+     <!-- ============ MODAIS FINANCEIRO ============ -->
+
+<!-- Modal: Receita (já existente) -->
+<div id="modalReceita" class="modal fixed inset-0 bg-black bg-opacity-50 hidden z-50">...</div>
+
+<!-- Modal: Despesa (já existente) -->
+<div id="modalDespesa" class="modal fixed inset-0 bg-black bg-opacity-50 hidden z-50">...</div>
+
+<!-- Modal: Conta a Receber (ADICIONAR AQUI) -->
+<div id="modalContaReceber" class="modal fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+    <div class="modal-content max-w-2xl mx-auto mt-20">
+        <div class="bg-white rounded-xl shadow-lg">
+            <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-lg font-semibold text-gray-900">📥 Nova Conta a Receber</h3>
+                <button onclick="fecharModalContaReceber()" class="text-gray-400 hover:text-gray-600">
+                    ✕
+                </button>
+            </div>
+            
+            <div class="p-6 space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            <span class="text-green-600">*</span> Cliente
+                        </label>
+                        <select id="conta-receber-cliente"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                            <option value="">Selecione o cliente...</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            <span class="text-green-600">*</span> Descrição
+                        </label>
+                        <input type="text" id="conta-receber-descricao" placeholder="Ex: Mensalidade Dezembro"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            <span class="text-green-600">*</span> Valor (R$)
+                        </label>
+                        <input type="number" id="conta-receber-valor" step="0.01" min="0" placeholder="0.00"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            <span class="text-green-600">*</span> Vencimento
+                        </label>
+                        <input type="date" id="conta-receber-vencimento"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                    </div>
+                    
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Parcelas</label>
+                        <select id="conta-receber-parcelas"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                            <option value="1">À vista</option>
+                            <option value="2">2 parcelas</option>
+                            <option value="3">3 parcelas</option>
+                            <option value="6">6 parcelas</option>
+                            <option value="12">12 parcelas</option>
+                        </select>
+                        <p class="text-xs text-gray-500 mt-1">Selecione "À vista" para pagamento único</p>
+                    </div>
+                </div>
+                
+                <div class="bg-green-50 p-4 rounded-lg mt-4">
+                    <h4 class="text-sm font-medium text-green-800 mb-2">Resumo da Conta</h4>
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <span class="text-gray-600">Valor Total:</span>
+                            <span id="conta-receber-total" class="font-semibold text-green-700 ml-2">R$ 0,00</span>
+                        </div>
+                        <div>
+                            <span class="text-gray-600">Valor por Parcela:</span>
+                            <span id="conta-receber-parcela" class="font-semibold text-green-700 ml-2">R$ 0,00</span>
+                        </div>
+                        <div>
+                            <span class="text-gray-600">Quantidade de Parcelas:</span>
+                            <span id="conta-receber-qtd-parcelas" class="font-semibold text-green-700 ml-2">1</span>
+                        </div>
+                        <div>
+                            <span class="text-gray-600">Status:</span>
+                            <span class="font-semibold text-yellow-600 ml-2">Pendente</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end gap-3 pt-4">
+                    <button onclick="fecharModalContaReceber()"
+                            class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition">
+                        Cancelar
+                    </button>
+                    <button onclick="salvarContaReceber()"
+                            class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition flex items-center gap-2">
+                        <span>💰</span>
+                        <span>Salvar Conta</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Conta a Pagar (ADICIONAR APÓS) -->
+<div id="modalContaPagar" class="modal fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+    <div class="modal-content max-w-2xl mx-auto mt-20">
+        <div class="bg-white rounded-xl shadow-lg">
+            <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-lg font-semibold text-gray-900">📤 Nova Conta a Pagar</h3>
+                <button onclick="fecharModalContaPagar()" class="text-gray-400 hover:text-gray-600">
+                    ✕
+                </button>
+            </div>
+            
+            <div class="p-6 space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            <span class="text-red-600">*</span> Profissional/Fornecedor
+                        </label>
+                        <input type="text" id="conta-pagar-fornecedor" placeholder="Nome"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            <span class="text-red-600">*</span> Descrição
+                        </label>
+                        <input type="text" id="conta-pagar-descricao" placeholder="Ex: Pagamento plantões"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            <span class="text-red-600">*</span> Valor (R$)
+                        </label>
+                        <input type="number" id="conta-pagar-valor" step="0.01" min="0" placeholder="0.00"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            <span class="text-red-600">*</span> Vencimento
+                        </label>
+                        <input type="date" id="conta-pagar-vencimento"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                    </div>
+                    
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Categoria</label>
+                        <select id="conta-pagar-categoria"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                            <option value="pagamento">Pagamento Profissional</option>
+                            <option value="fornecedor">Fornecedor</option>
+                            <option value="aluguel">Aluguel</option>
+                            <option value="equipamento">Equipamentos</option>
+                            <option value="outros">Outros</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="bg-red-50 p-4 rounded-lg mt-4">
+                    <h4 class="text-sm font-medium text-red-800 mb-2">Resumo da Conta</h4>
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <span class="text-gray-600">Valor Total:</span>
+                            <span id="conta-pagar-total" class="font-semibold text-red-700 ml-2">R$ 0,00</span>
+                        </div>
+                        <div>
+                            <span class="text-gray-600">Vencimento:</span>
+                            <span id="conta-pagar-data" class="font-semibold text-red-700 ml-2">-</span>
+                        </div>
+                        <div>
+                            <span class="text-gray-600">Categoria:</span>
+                            <span id="conta-pagar-cat-text" class="font-semibold text-red-700 ml-2">Pagamento Profissional</span>
+                        </div>
+                        <div>
+                            <span class="text-gray-600">Status:</span>
+                            <span class="font-semibold text-yellow-600 ml-2">Pendente</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end gap-3 pt-4">
+                    <button onclick="fecharModalContaPagar()"
+                            class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition">
+                        Cancelar
+                    </button>
+                    <button onclick="salvarContaPagar()"
+                            class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition flex items-center gap-2">
+                        <span>💸</span>
+                        <span>Salvar Conta</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Outros modais... -->
+</body>
+     <!-- ==================== MODAL: CONTA A RECEBER ==================== -->
+<div id="modalContaReceber" class="modal">
+    <div class="modal-content w-full max-w-2xl">
+        <div class="modal-header">
+            <div class="modal-title flex items-center gap-2">
+                <span>📥</span>
+                <span>Nova Conta a Receber</span>
+            </div>
+            <span class="close-modal" onclick="fecharModalContaReceber()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="conta-receber-cliente">Cliente *</label>
+                    <select id="conta-receber-cliente" class="form-select">
+                        <option value="">Selecione o cliente...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="conta-receber-descricao">Descrição *</label>
+                    <input type="text" id="conta-receber-descricao" 
+                           class="form-input"
+                           placeholder="Ex: Mensalidade Dezembro">
+                </div>
+                <div class="form-group">
+                    <label for="conta-receber-valor">Valor (R$) *</label>
+                    <input type="number" id="conta-receber-valor" 
+                           class="form-input"
+                           step="0.01" min="0" 
+                           placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label for="conta-receber-vencimento">Vencimento *</label>
+                    <input type="date" id="conta-receber-vencimento" 
+                           class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="conta-receber-parcelas">Parcelas</label>
+                    <select id="conta-receber-parcelas" class="form-select">
+                        <option value="1">À vista</option>
+                        <option value="2">2x</option>
+                        <option value="3">3x</option>
+                        <option value="6">6x</option>
+                        <option value="12">12x</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex gap-3 justify-end mt-6">
+                <button class="btn btn-secondary" onclick="fecharModalContaReceber()">
+                    Cancelar
+                </button>
+                <button class="btn btn-success flex items-center gap-2" onclick="salvarContaReceber()">
+                    <span>💰</span>
+                    <span>Salvar</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== MODAL: CONTA A PAGAR ==================== -->
+<div id="modalContaPagar" class="modal">
+    <div class="modal-content w-full max-w-2xl">
+        <div class="modal-header">
+            <div class="modal-title flex items-center gap-2">
+                <span>📤</span>
+                <span>Nova Conta a Pagar</span>
+            </div>
+            <span class="close-modal" onclick="fecharModalContaPagar()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="conta-pagar-fornecedor">Profissional/Fornecedor *</label>
+                    <input type="text" id="conta-pagar-fornecedor" 
+                           class="form-input"
+                           placeholder="Nome">
+                </div>
+                <div class="form-group">
+                    <label for="conta-pagar-descricao">Descrição *</label>
+                    <input type="text" id="conta-pagar-descricao" 
+                           class="form-input"
+                           placeholder="Ex: Pagamento plantões">
+                </div>
+                <div class="form-group">
+                    <label for="conta-pagar-valor">Valor (R$) *</label>
+                    <input type="number" id="conta-pagar-valor" 
+                           class="form-input"
+                           step="0.01" min="0" 
+                           placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label for="conta-pagar-vencimento">Vencimento *</label>
+                    <input type="date" id="conta-pagar-vencimento" 
+                           class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="conta-pagar-categoria">Categoria</label>
+                    <select id="conta-pagar-categoria" class="form-select">
+                        <option value="pagamento">Pagamento Profissional</option>
+                        <option value="fornecedor">Fornecedor</option>
+                        <option value="aluguel">Aluguel</option>
+                        <option value="equipamento">Equipamentos</option>
+                        <option value="outros">Outros</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex gap-3 justify-end mt-6">
+                <button class="btn btn-secondary" onclick="fecharModalContaPagar()">
+                    Cancelar
+                </button>
+                <button class="btn btn-danger flex items-center gap-2" onclick="salvarContaPagar()">
+                    <span>💸</span>
+                    <span>Salvar</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== MODAL: DETALHES CLIENTE ==================== -->
+<div id="modalDetalhesCliente" class="modal">
+    <div class="modal-content w-full max-w-4xl">
+        <div class="modal-header">
+            <div class="modal-title flex items-center gap-2">
+                <span>👥</span>
+                <span>Detalhes do Cliente</span>
+            </div>
+            <span class="close-modal" onclick="fecharModalDetalhesCliente()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div id="detalhes-cliente-content" class="space-y-6">
+                <!-- Conteúdo carregado dinamicamente -->
+            </div>
+            <div class="flex gap-3 justify-end mt-6">
+                <button class="btn btn-secondary" onclick="fecharModalDetalhesCliente()">
+                    Fechar
+                </button>
+                <button class="btn btn-primary flex items-center gap-2" onclick="editarClienteDetalhes()">
+                    <span>✏️</span>
+                    <span>Editar</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modalContaReceber" class="modal hidden">
+    <div class="modal-content w-full max-w-2xl">
+        <div class="modal-header">
+            <div class="modal-title">📥 Nova Conta a Receber</div>
+            <span class="close-modal">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>Modal de conta a receber funcionando!</p>
+            <div class="mt-6 flex gap-3 justify-end">
+                <button class="btn btn-secondary close-modal">Cancelar</button>
+                <button class="btn btn-success">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalContaPagar" class="modal hidden">
+    <div class="modal-content w-full max-w-2xl">
+        <div class="modal-header">
+            <div class="modal-title">📤 Nova Conta a Pagar</div>
+            <span class="close-modal">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>Modal de conta a pagar funcionando!</p>
+            <div class="mt-6 flex gap-3 justify-end">
+                <button class="btn btn-secondary close-modal">Cancelar</button>
+                <button class="btn btn-danger">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
